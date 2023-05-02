@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using HomeApi.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,24 @@ namespace HomeApi.Data.Repos
             if (entry.State == EntityState.Detached)
                 await _context.Rooms.AddAsync(room);
             
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ConfigureRoom(Room room, string name, int area, bool gasConnected, int voltage)
+        {
+            _context.Rooms.Remove(room);
+            await _context.SaveChangesAsync();
+            
+            room.Id  = Guid.NewGuid();
+            room.AddDate  = DateTime.Now;
+            room.Name = name;
+            room.Area = area;
+            room.GasConnected = gasConnected;
+            room.Voltage = voltage;
+
+            
+
+            await AddRoom(room);
             await _context.SaveChangesAsync();
         }
     }

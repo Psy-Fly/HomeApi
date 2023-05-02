@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
+using HomeApi.Contracts.Models.Devices;
 using HomeApi.Contracts.Models.Rooms;
 using HomeApi.Data.Models;
 using HomeApi.Data.Repos;
@@ -41,6 +43,21 @@ namespace HomeApi.Controllers
             }
             
             return StatusCode(409, $"Ошибка: Комната {request.Name} уже существует.");
+        }
+
+        [HttpPut]
+        [Route("Configure/{name}")]
+        public async Task<IActionResult> Configure([FromRoute] string name, ConfigureRoomRequest request)
+        {
+            var room = await _repository.GetRoomByName(name);
+            if (room == null)
+                return StatusCode(404, $"Комната не существует! Проверьте название!");
+
+            await _repository.ConfigureRoom(room, request.NewName, request.NewArea, request.NewGasConnected,
+                request.NewVoltage);
+
+            return StatusCode(200, $"Комната {room.Name} {room.Id} успешно добавлена!");
+
         }
     }
 }

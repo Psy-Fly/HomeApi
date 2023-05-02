@@ -10,5 +10,6 @@ namespace HomeApi.Data.Repos
     {
         Task<Room> GetRoomByName(string name);
         Task AddRoom(Room room);
+        Task ConfigureRoom(Room room, string name, int area, bool gasConnected, int voltage);
     }
 }
